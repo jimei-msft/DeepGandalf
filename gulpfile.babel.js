@@ -6,6 +6,7 @@ import gulp from 'gulp';
 // Load all gulp plugins automatically
 // and attach them to the `plugins` object
 import plugins from 'gulp-load-plugins';
+import gap from 'gulp-append-prepend';
 
 // Temporary solution until gulp 4
 // https://github.com/gulpjs/gulp/issues/355
@@ -81,6 +82,7 @@ gulp.task('copy', [
   'copy:jquery',
   'copy:license',
   'copy:main.css',
+  'copy:index.css',
   'copy:misc',
   'copy:normalize'
 ]);
@@ -126,6 +128,20 @@ gulp.task('copy:main.css', () => {
       browsers: ['last 2 versions', 'ie >= 9', '> 1%'],
       cascade: false
     }))
+    .pipe(gulp.dest(`${dirs.dist}/css`));
+});
+
+gulp.task('copy:index.css', () => {
+  const banner = `/*! Deep Gandalf v${pkg.version} | ${pkg.license} License | ${pkg.homepage} */\n\n`;
+
+  gulp.src(`src/css/index.css`)
+    //.pipe(plugins().header(banner))
+    .pipe(gap.appendText('<!-- HOME -->'))
+    .pipe(gap.appendFile('src/css/main.css'))
+    //.pipe(plugins().autoprefixer({
+    //  browsers: ['last 2 versions', 'ie >= 9', '> 1%'],
+    //  cascade: false
+    //}))
     .pipe(gulp.dest(`${dirs.dist}/css`));
 });
 
