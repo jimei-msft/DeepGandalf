@@ -108,6 +108,21 @@ gulp.task('copy:index.html', () => {
     .pipe(gulp.dest(dirs.dist));
 });
 
+gulp.task('copy:input.html', () => {
+  const hash = ssri.fromData(
+    fs.readFileSync('node_modules/jquery/dist/jquery.min.js'),
+    {algorithms: ['sha256']}
+  );
+  let version = pkg.devDependencies.jquery;
+  let modernizrVersion = pkg.devDependencies.modernizr;
+
+  gulp.src(`${dirs.src}/input.html`)
+    .pipe(plugins().replace(/{{JQUERY_VERSION}}/g, version))
+    .pipe(plugins().replace(/{{MODERNIZR_VERSION}}/g, modernizrVersion))
+    .pipe(plugins().replace(/{{JQUERY_SRI_HASH}}/g, hash.toString()))
+    .pipe(gulp.dest(dirs.dist));
+});
+
 gulp.task('copy:jquery', () =>
   gulp.src(['node_modules/jquery/dist/jquery.min.js'])
     .pipe(plugins().rename(`jquery-${pkg.devDependencies.jquery}.min.js`))
